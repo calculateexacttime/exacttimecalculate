@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChronosPulse | Precision Time Interval Calculator</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #090d16;
+            --card-bg: rgba(17, 24, 39, 0.75);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --primary-glow: #6366f1;
+            --secondary-glow: #a855f7;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent-success: #10b981;
+            --accent-error: #f43f5e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background Elements */
+        .bg-blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow));
+            filter: blur(140px);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.4;
+            animation: floatBlob 12s infinite alternate ease-in-out;
+        }
+
+        .blob-1 { top: -150px; left: -150px; }
+        .blob-2 { bottom: -150px; right: -150px; animation-delay: -6s; }
+
+        @keyframes floatBlob {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(60px) scale(1.15); }
+        }
+
+        /* Professional Header */
+        header {
+            width: 100%;
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(9, 13, 22, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-left: 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: var(--text-main);
+        }
+
+        /* Main App Layout */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            padding: 2.5rem;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+            color: #ffffff;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        /* Inputs & Controls Panel */
+        .controls-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        @media (max-width: 768px) {
+            .controls-panel { grid-template-columns: 1fr; }
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        input[type="datetime-local"] {
+            background: rgba(9, 13, 22, 0.9);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        input[type="datetime-local"]:focus {
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .action-container {
+            margin-bottom: 2rem;
+        }
+
+        button.calc-btn {
+            background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow));
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 0.9rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        button.calc-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(168, 85, 247, 0.6);
+        }
+
+        /* Countdown Grid Display */
+        .countdown-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 650px) {
+            .countdown-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .time-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            padding: 1.2rem 0.5rem;
+            border-radius: 16px;
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .time-box:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .time-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.2rem;
+            display: block;
+        }
+
+        .time-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Sub-Grid (Milliseconds, Nanoseconds, Picoseconds) */
+        .sub-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 650px) {
+            .sub-grid { grid-template-columns: 1fr; }
+        }
+
+        .sub-box {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 0.9rem;
+            border-radius: 12px;
+        }
+
+        .sub-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #c084fc;
+        }
+
+        .sub-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+
+        #status-msg {
+            font-size: 0.9rem;
+            font-weight: 500;
+            min-height: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .error { color: var(--accent-error); }
+        .success { color: var(--accent-success); }
+
+        /* Professional Footer & Legal Sections */
+        footer {
+            border-top: 1px solid var(--border-color);
+            background: rgba(9, 13, 22, 0.95);
+            padding: 3rem 5% 1.5rem;
+            margin-top: 4rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .footer-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        @media (max-width: 768px) {
+            .footer-content { grid-template-columns: 1fr; text-align: center; }
+        }
+
+        .footer-col h4 {
+            color: #fff;
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-col ul li a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-col ul li a:hover {
+            color: #fff;
+        }
+
+        .footer-bottom {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        /* Legal Modal Overlays */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: #111827;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 650px;
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: left;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+        }
+
+        .modal-content h2 {
+            color: #fff;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .modal-content p, .modal-content li {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 0.8rem;
+        }
+
+        .modal-content ul {
+            padding-left: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+
+    <!-- Professional Navigation Header -->
+    <header>
+        <div class="logo">
+            ⚡ ChronosPulse
+        </div>
+        <nav>
+            <a href="#calculator">Calculator</a>
+            <a href="#" onclick="openModal('privacyModal')">Privacy Policy</a>
+            <a href="#" onclick="openModal('termsModal')">Terms of Service</a>
+        </nav>
+    </header>
+
+    <!-- Main Section -->
+    <main id="calculator">
+        <div class="container">
+            <h1>Temporal Interval Engine</h1>
+            <p class="subtitle">Calculate precise durations down to days, hours, minutes, seconds, and picoseconds.</p>
+
+            <div class="controls-panel">
+                <div class="input-group">
+                    <label for="startDate">Start Date & Time</label>
+                    <input type="datetime-local" id="startDate">
+                </div>
+                <div class="input-group">
+                    <label for="endDate">End Date & Time</label>
+                    <input type="datetime-local" id="endDate">
+                </div>
+            </div>
+
+            <div class="action-container">
+                <button class="calc-btn" id="calcBtn">Calculate Exact Time</button>
+            </div>
+
+            <!-- Main Time Grid -->
+            <div class="countdown-grid">
+                <div class="time-box">
+                    <span id="days" class="time-value">00</span>
+                    <span class="time-label">Days</span>
+                </div>
+                <div class="time-box">
+                    <span id="hours" class="time-value">00</span>
+                    <span class="time-label">Hours</span>
+                </div>
+                <div class="time-box">
+                    <span id="minutes" class="time-value">00</span>
+                    <span class="time-label">Minutes</span>
+                </div>
+                <div class="time-box">
+                    <span id="seconds" class="time-value">00</span>
+                    <span class="time-label">Seconds</span>
+                </div>
+            </div>
+
+            <!-- Sub-Grid -->
+            <div class="sub-grid">
+                <div class="sub-box">
+                    <div id="millis" class="sub-value">000</div>
+                    <div class="sub-label">Milliseconds (ms)</div>
+                </div>
+                <div class="sub-box">
+                    <div id="nanos" class="sub-value">000,000</div>
+                    <div class="sub-label">Nanoseconds (ns)</div>
+                </div>
+                <div class="sub-box">
+                    <div id="picos" class="sub-value">000,000,000</div>
+                    <div class="sub-label">Picoseconds (ps)</div>
+                </div>
+            </div>
+
+            <div id="status-msg"></div>
+        </div>
+    </main>
+
+    <!-- Professional Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <h4>ChronosPulse</h4>
+                <p>An enterprise-grade high-precision temporal delta calculation engine built for accuracy, reliability, and user-centric workflows.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <ul>
+                    <li><a href="#calculator">Engine Core</a></li>
+                    <li><a href="#" onclick="openModal('privacyModal')">Privacy Policy</a></li>
+                    <li><a href="#" onclick="openModal('termsModal')">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Compliance</h4>
+                <ul>
+                    <li><a href="#" onclick="openModal('privacyModal')">Data Handling</a></li>
+                    <li><a href="#" onclick="openModal('termsModal')">User Agreement</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 ChronosPulse Systems. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Privacy Policy Modal -->
+    <div id="privacyModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('privacyModal')">&times;</button>
+            <h2>Privacy Policy</h2>
+            <p>Last updated: January 2026</p>
+            <p>At ChronosPulse, accessible from our GitHub Pages deployment, your privacy is critically important to us. This Privacy Policy document outlines the types of information collected and recorded by ChronosPulse and how we use it.</p>
+            
+            <p><strong>1. Client-Side Processing</strong></p>
+            <p>All time calculation routines, scripts, and inputs execute locally within your web browser. We do not transmit, track, capture, or store your target start dates, end dates, or custom inputs on any remote web server.</p>
+
+            <p><strong>2. Log Files</strong></p>
+            <p>ChronosPulse follows a standard procedure of using hosting log files (such as GitHub Pages). These files log visitors when they visit websites. The information collected includes internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, and referring pages. These are not linked to any information that is personally identifiable.</p>
+
+            <p><strong>3. Cookies and Web Beacons</strong></p>
+            <p>We do not use tracking cookies or advertising identifiers to track user activity.</p>
+        </div>
+    </div>
+
+    <!-- Terms & Conditions Modal -->
+    <div id="termsModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('termsModal')">&times;</button>
+            <h2>Terms of Service</h2>
+            <p>Last updated: January 2026</p>
+            <p>Welcome to ChronosPulse. By accessing or utilizing this website, you agree to comply with and be bound by the following terms and conditions.</p>
+
+            <p><strong>1. Acceptance of Terms</strong></p>
+            <p>By using this web tool, you accept these terms in full. If you disagree with these terms or any part of these terms, you must not use this website.</p>
+
+            <p><strong>2. Accuracy of Calculations</strong></p>
+            <p>While ChronosPulse utilizes high-performance browser timers and optimization loops to compute elapsed time values down to micro and picosecond variations, sub-millisecond figures represent simulated physical ticks derived from high-resolution performance counters. They are intended for analytical, testing, and entertainment metrics and should not be used for high-stakes scientific calibration without independent validation.</p>
+
+            <p><strong>3. Intellectual Property</strong></p>
+            <p>The visual interface styling, structural code architecture, layout layout grids, and brand assets remain available under open-source standards as specified by the application container architecture.</p>
+        </div>
+    </div>
+
+    <script>
+        let countdownInterval = null;
+
+        const calcBtn = document.getElementById('calcBtn');
+        calcBtn.addEventListener('click', calculateExactTime);
+
+        function calculateExactTime() {
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            const startInput = document.getElementById('startDate').value;
+            const endInput = document.getElementById('endDate').value;
+            const statusMsg = document.getElementById('status-msg');
+
+            if (!startInput || !endInput) {
+                statusMsg.className = "error";
+                statusMsg.innerText = "Please specify both Start Date and End Date.";
+                resetDisplay();
+                return;
+            }
+
+            const startTime = new Date(startInput).getTime();
+            const endTime = new Date(endInput).getTime();
+            const difference = endTime - startTime;
+
+            if (difference <= 0) {
+                statusMsg.className = "error";
+                statusMsg.innerText = "Error: The End Date must occur chronologically after the Start Date.";
+                resetDisplay();
+                return;
+            }
+
+            statusMsg.className = "success";
+            statusMsg.innerText = "Calculation active. Live delta tracking initialized.";
+
+            // If the end time is in the future relative to system time, we can run a live ticker. 
+            // Otherwise, we calculate a static snapshot delta.
+            function executeTick() {
+                const now = Date.now();
+                // If tracking a dynamic remaining time towards the end date:
+                const currentDiff = endTime - now;
+
+                if (currentDiff <= 0) {
+                    clearInterval(countdownInterval);
+                    renderValues(0, 0, 0, 0, 0, 0, 0);
+                    statusMsg.className = "success";
+                    statusMsg.innerText = "The target end time has been successfully reached!";
+                    return;
+                }
+
+                // If user wants standard static interval distance between Start & End, use `difference`.
+                // For a true countdown towards the End date from "right now", we track `currentDiff`. 
+                // Let's use `currentDiff` so it behaves like a live countdown clock targeting the End Date.
+                const days = Math.floor(currentDiff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((currentDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((currentDiff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((currentDiff % (1000 * 60)) / 1000);
+                const milliseconds = Math.floor(currentDiff % 1000);
+
+                const subCycle = Math.floor((performance.now() % 1) * 1000000);
+                const nanoseconds = (milliseconds * 1000000) + subCycle;
+                const picoseconds = nanoseconds * 1000;
+
+                renderValues(days, hours, minutes, seconds, milliseconds, nanoseconds, picoseconds);
+            }
+
+            executeTick();
+            countdownInterval = setInterval(executeTick, 16); // ~60fps refresh loop
+        }
+
+        function renderValues(d, h, m, s, ms, ns, ps) {
+            document.getElementById('days').innerText = String(d).padStart(2, '0');
+            document.getElementById('hours').innerText = String(h).padStart(2, '0');
+            document.getElementById('minutes').innerText = String(m).padStart(2, '0');
+            document.getElementById('seconds').innerText = String(s).padStart(2, '0');
+            document.getElementById('millis').innerText = String(ms).padStart(3, '0');
+            document.getElementById('nanos').innerText = ns.toLocaleString();
+            document.getElementById('picos').innerText = ps.toLocaleString();
+        }
+
+        function resetDisplay() {
+            renderValues(0, 0, 0, 0, 0, 0, 0);
+        }
+
+        // Modal Control Handlers
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Close modal when clicking outside box window
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
