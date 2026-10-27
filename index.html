@@ -10,7 +10,7 @@
     <style>
         :root {
             --bg-color: #090d16;
-            --card-bg: rgba(17, 24, 39, 0.8);
+            --card-bg: rgba(17, 24, 39, 0.85);
             --border-color: rgba(255, 255, 255, 0.08);
             --primary-glow: #6366f1;
             --secondary-glow: #a855f7;
@@ -60,7 +60,7 @@
             100% { transform: translateY(60px) scale(1.15); }
         }
 
-        /* Navigation Header */
+        /* Professional Header */
         header {
             width: 100%;
             padding: 1.2rem 5%;
@@ -95,9 +95,7 @@
             transition: color 0.2s;
         }
 
-        nav a:hover {
-            color: var(--text-main);
-        }
+        nav a:hover { color: var(--text-main); }
 
         /* Main Container */
         main {
@@ -134,7 +132,7 @@
             font-size: 0.95rem;
         }
 
-        /* Calendar & Time Selection Grid */
+        /* Picker Grid Section */
         .picker-section {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -148,7 +146,7 @@
         }
 
         .picker-card {
-            background: rgba(9, 13, 22, 0.6);
+            background: rgba(9, 13, 22, 0.65);
             border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 1.2rem;
@@ -166,9 +164,9 @@
             gap: 0.4rem;
         }
 
-        /* Calendar Visualizer UI Widget */
+        /* Built-in Calendar Component Styles */
         .calendar-box {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.35);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 12px;
             padding: 0.8rem;
@@ -183,6 +181,25 @@
             font-weight: 600;
             margin-bottom: 0.6rem;
             color: var(--text-main);
+        }
+
+        .cal-nav-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: var(--text-main);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .cal-nav-btn:hover {
+            background: var(--primary-glow);
         }
 
         .cal-grid {
@@ -200,32 +217,33 @@
         }
 
         .cal-day {
-            padding: 5px 0;
+            padding: 6px 0;
             color: var(--text-main);
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
 
         .cal-day:hover {
-            background: rgba(99, 102, 241, 0.2);
+            background: rgba(99, 102, 241, 0.25);
         }
 
         .cal-day.active-selected {
             background: var(--primary-glow);
             color: #fff;
             font-weight: bold;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
         }
 
         .cal-day.muted {
-            color: rgba(156, 163, 175, 0.3);
+            color: rgba(156, 163, 175, 0.25);
         }
 
-        /* Form Controls inside picker card */
+        /* Input Controls inside Picker */
         .input-stack {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.4rem;
         }
 
         .input-stack label {
@@ -243,8 +261,8 @@
             font-family: 'Outfit', sans-serif;
             font-size: 0.9rem;
             outline: none;
-            transition: border-color 0.2s;
             width: 100%;
+            transition: border-color 0.2s;
         }
 
         input[type="datetime-local"]:focus {
@@ -261,8 +279,8 @@
             color: white;
             border: none;
             width: 100%;
-            padding: 0.95rem;
-            font-size: 1rem;
+            padding: 1rem;
+            font-size: 1.05rem;
             font-weight: 600;
             border-radius: 12px;
             cursor: pointer;
@@ -292,12 +310,6 @@
             border: 1px solid var(--border-color);
             padding: 1.2rem 0.5rem;
             border-radius: 16px;
-            transition: transform 0.3s, background 0.3s;
-        }
-
-        .time-box:hover {
-            border-color: rgba(99, 102, 241, 0.3);
-            background: rgba(255, 255, 255, 0.04);
         }
 
         .time-value {
@@ -488,24 +500,26 @@
         </nav>
     </header>
 
-    <!-- Main App Container -->
+    <!-- Main Container -->
     <main id="calculator">
         <div class="container">
             <h1>Calendar Precision Calculator</h1>
-            <p class="subtitle">Select starting and ending intervals via calendar UI and exact time clocks.</p>
+            <p class="subtitle">Select starting and ending intervals via interactive calendars and precision time configurations.</p>
 
-            <!-- Calendar & Time Selectors Section -->
+            <!-- Calendar & Time Selection Section -->
             <div class="picker-section">
                 <!-- Start Picker Card -->
                 <div class="picker-card">
-                    <div class="picker-title">🚀 Start Date & Time</div>
+                    <div class="picker-title">
+                        <span>🚀 Start Date & Time</span>
+                    </div>
                     <div class="calendar-box">
                         <div class="cal-header">
+                            <button class="cal-nav-btn" onclick="changeMonth('start', -1)">&#10094;</button>
                             <span id="startMonthYear">Month Year</span>
+                            <button class="cal-nav-btn" onclick="changeMonth('start', 1)">&#10095;</button>
                         </div>
-                        <div class="cal-grid" id="startCalGrid">
-                            <!-- Injected by JS -->
-                        </div>
+                        <div class="cal-grid" id="startCalGrid"></div>
                     </div>
                     <div class="input-stack">
                         <label>Exact Start Time</label>
@@ -515,14 +529,16 @@
 
                 <!-- End Picker Card -->
                 <div class="picker-card">
-                    <div class="picker-title">🎯 End Date & Time</div>
+                    <div class="picker-title">
+                        <span>🎯 End Date & Time</span>
+                    </div>
                     <div class="calendar-box">
                         <div class="cal-header">
+                            <button class="cal-nav-btn" onclick="changeMonth('end', -1)">&#10094;</button>
                             <span id="endMonthYear">Month Year</span>
+                            <button class="cal-nav-btn" onclick="changeMonth('end', 1)">&#10095;</button>
                         </div>
-                        <div class="cal-grid" id="endCalGrid">
-                            <!-- Injected by JS -->
-                        </div>
+                        <div class="cal-grid" id="endCalGrid"></div>
                     </div>
                     <div class="input-stack">
                         <label>Exact End Time</label>
@@ -580,7 +596,7 @@
         <div class="footer-content">
             <div class="footer-col">
                 <h4>ChronosCalendar Pro</h4>
-                <p>Enterprise temporal calculation and calendar grid visualization tool designed for maximum fidelity and compliance.</p>
+                <p>Enterprise temporal calculation and interactive calendar grid visualization tool designed for maximum fidelity and compliance.</p>
             </div>
             <div class="footer-col">
                 <h4>Navigation</h4>
@@ -594,8 +610,7 @@
                 <h4>Legal</h4>
                 <ul>
                     <li><a href="#" onclick="openModal('privacyModal')">Data Policy</a></li>
-                    <li><a href="#" onclick="openModal('termsModal')">
-                        <li><a href="#" onclick="openModal('termsModal')">User Agreement</a></li>
+                    <li><a href="#" onclick="openModal('termsModal')">User Agreement</a></li>
                 </ul>
             </div>
         </div>
@@ -610,59 +625,64 @@
             <button class="close-btn" onclick="closeModal('privacyModal')">&times;</button>
             <h2>Privacy Policy</h2>
             <p>Last updated: January 2026</p>
-            <p>At ChronosCalendar Pro, your privacy is our core priority. This Privacy Policy document outlines how data handles within your browser interface.</p>
-            
-            <p><strong>1. Client-Side Operations</strong></p>
-            <p>All calendar rendering, calendar node selections, and high-precision time calculations run locally inside your browser runtime. We do not track, collect, transmit, or store your target date selections or schedule parameters on any external remote server database.</p>
-
-            <p><strong>2. Standard Server Logs</strong></p>
-            <p>As standard for static web repositories (like GitHub Pages), basic technical metadata including browser type, timestamps, and standard routing requests may be captured automatically by hosting edge network infrastructure for reliability analysis.</p>
-
-            <p><strong>3. Cookies Policy</strong></p>
-            <p>We do not deploy invasive marketing trackers, session profiling cookies, or third-party behavioral beacons.</p>
+            <p>At ChronosCalendar Pro, your privacy is our core priority. All calendar rendering, interactive node selections, and time evaluations run entirely client-side within your browser environment.</p>
+            <p><strong>1. Data Collection</strong></p>
+            <p>We do not store, log, or transmit your calendar date selections or schedules to any remote web server databases.</p>
         </div>
     </div>
 
     <!-- Terms & Conditions Modal -->
     <div id="termsModal" class="modal">
         <div class="modal-content">
-            <button class="close-btn" onclick="closeModal('termsModal')">&times;</button>
+            <button class="close-btn" onclick="openModal('termsModal')">&times;</button>
             <h2>Terms of Service</h2>
             <p>Last updated: January 2026</p>
-            <p>Welcome to ChronosCalendar Pro. By accessing, utilizing, or interacting with this platform, you agree to bound by these terms.</p>
-
-            <p><strong>1. Service Overview</strong></p>
-            <p>This software platform gives you visual calendar-backed duration analysis. Calculations remain inactive until explicitly initiated by user interaction.</p>
-
-            <p><strong>2. Precision Disclaimer</strong></p>
-            <p>While standard time units (Days, Hours, Minutes, Seconds, Milliseconds) are mapped strictly against real-time system clocks, high-speed micro-metric subdivisions (Nanoseconds and Picoseconds) simulate high-frequency performance counter increments for user interface design purposes.</p>
-
-            <p><strong>3. Open Compliance</strong></p>
-            <p>The code framework is supplied as-is under standard open collaboration guidelines.</p>
+            <p>By using ChronosCalendar Pro, you agree to these operational rules.</p>
+            <p><strong>1. Precision Disclaimer</strong></p>
+            <p>Sub-millisecond displays (Nanoseconds and Picoseconds) simulate high-frequency internal counter metrics for analytics and visual user verification purposes.</p>
         </div>
     </div>
 
     <script>
         let countdownInterval = null;
 
-        // Initialize UI Calendars on Load (Defaulting to current month views)
-        const currentDateObj = new Date();
-        renderCalendar('startCalGrid', 'startMonthYear', currentDateObj.getFullYear(), currentDateObj.getMonth());
-        renderCalendar('endCalGrid', 'endMonthYear', currentDateObj.getFullYear(), currentDateObj.getMonth() + 1); // Next month for end default
+        // Calendar Navigation State trackers
+        let startViewState = { year: new Date().getFullYear(), month: new Date().getMonth() };
+        let endViewState = { year: new Date().getFullYear(), month: new Date().getMonth() };
 
-        // Render mini interactive calendars inside the picker cards
-        function renderCalendar(gridId, labelId, year, month) {
+        // Initialize UI Calendars on Load
+        renderCalendar('start');
+        renderCalendar('end');
+
+        function changeMonth(type, direction) {
+            let state = type === 'start' ? startViewState : endViewState;
+            state.month += direction;
+            if (state.month > 11) {
+                state.month = 0;
+                state.year++;
+            } else if (state.month < 0) {
+                state.month = 11;
+                state.year--;
+            }
+            renderCalendar(type);
+        }
+
+        function renderCalendar(type) {
+            const gridId = type === 'start' ? 'startCalGrid' : 'endCalGrid';
+            const labelId = type === 'start' ? 'startMonthYear' : 'endMonthYear';
+            const state = type === 'start' ? startViewState : endViewState;
+            
             const grid = document.getElementById(gridId);
             const label = document.getElementById(labelId);
             grid.innerHTML = '';
 
-            const firstDayIndex = new Date(year, month, 1).getDay();
-            const totalDays = new Date(year, month + 1, 0).getDate();
+            const firstDayIndex = new Date(state.year, state.month, 1).getDay();
+            const totalDays = new Date(state.year, state.month + 1, 0).getDate();
             const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-            label.innerText = `${monthNames[month]} ${year}`;
+            label.innerText = `${monthNames[state.month]} ${state.year}`;
 
-            // Render day name headers
+            // Day headers
             const daysShort = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
             daysShort.forEach(d => {
                 const dayNameDiv = document.createElement('div');
@@ -671,24 +691,23 @@
                 grid.appendChild(dayNameDiv);
             });
 
-            // Blank spaces for offset
+            // Offset blank slots
             for (let i = 0; i < firstDayIndex; i++) {
                 const blank = document.createElement('div');
                 blank.className = 'cal-day muted';
                 grid.appendChild(blank);
             }
 
-            // Actual calendar days
+            // Days generation
             for (let day = 1; day <= totalDays; day++) {
                 const dayDiv = document.createElement('div');
                 dayDiv.className = 'cal-day';
                 dayDiv.innerText = day;
                 
-                // Allow clicking calendar day to auto-inject into the companion datetime input
                 dayDiv.onclick = function() {
-                    const formattedMonth = String(month + 1).padStart(2, '0');
+                    const formattedMonth = String(state.month + 1).padStart(2, '0');
                     const formattedDay = String(day).padStart(2, '0');
-                    const targetInputId = gridId.includes('start') ? 'startDate' : 'endDate';
+                    const targetInputId = type === 'start' ? 'startDate' : 'endDate';
                     
                     let existingVal = document.getElementById(targetInputId).value;
                     let timePart = "00:00";
@@ -696,9 +715,9 @@
                         timePart = existingVal.split('T')[1];
                     }
                     
-                    document.getElementById(targetInputId).value = `${year}-${formattedMonth}-${formattedDay}T${timePart}`;
+                    document.getElementById(targetInputId).value = `${state.year}-${formattedMonth}-${formattedDay}T${timePart}`;
                     
-                    // Highlight selected day visually in grid
+                    // Highlight UI element
                     Array.from(grid.getElementsByClassName('cal-day')).forEach(el => el.classList.remove('active-selected'));
                     dayDiv.classList.add('active-selected');
                 };
@@ -707,7 +726,7 @@
             }
         }
 
-        // Calculation Trigger Engine
+        // Calculation Trigger
         document.getElementById('calcBtn').addEventListener('click', function() {
             if (countdownInterval) clearInterval(countdownInterval);
 
@@ -717,7 +736,7 @@
 
             if (!startInput || !endInput) {
                 statusMsg.className = "error";
-                statusMsg.innerText = "Please complete both Start and End date/time selections.";
+                statusMsg.innerText = "Please specify both Start and End calendar intervals.";
                 resetDisplay();
                 return;
             }
@@ -728,13 +747,13 @@
 
             if (difference <= 0) {
                 statusMsg.className = "error";
-                statusMsg.innerText = "Validation Error: End Date must occur after Start Date.";
+                statusMsg.innerText = "Validation Error: End Date must occur chronologically after Start Date.";
                 resetDisplay();
                 return;
             }
 
             statusMsg.className = "success";
-            statusMsg.innerText = "Calculation active. Live interval tracking operational.";
+            statusMsg.innerText = "Calculation active. Precision loop initialized.";
 
             function executeEngineTick() {
                 const now = Date.now();
@@ -744,7 +763,7 @@
                     clearInterval(countdownInterval);
                     renderValues(0, 0, 0, 0, 0, 0, 0);
                     statusMsg.className = "success";
-                    statusMsg.innerText = "Target destination timestamp successfully achieved!";
+                    statusMsg.innerText = "Target end destination has been fully achieved!";
                     return;
                 }
 
